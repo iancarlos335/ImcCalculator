@@ -1,7 +1,9 @@
 #include <iostream>
 #include <vector>
+#include <locale>
+using namespace std;
 
-std::string privateNome;
+string privateNome;
 int privateIdade;
 double privatePeso;
 double privateAltura;
@@ -15,14 +17,14 @@ int loopSkip = 1;
 class Pessoa
 {
 public:
-    std::string nome;
+    string nome;
     int idade;
     double peso;
     double altura;
     double imc;
 
     Pessoa(){};
-    Pessoa(std::string nome, int idade, double peso, double altura, double imc)
+    Pessoa(string nome, int idade, double peso, double altura, double imc)
     {
         this->nome = nome;
         this->idade = idade;
@@ -32,15 +34,15 @@ public:
     };
 };
 
-std::string filter;
-std::vector<Pessoa> pessoas;
+string filter;
+vector<Pessoa> pessoas;
 
 void showMenu()
 {
-    std::cout << "\nVoce gostaria de cadastrar mais uma pessoa, listar as ja cadastradas, ou encerrar o programa?\n\n1 - Cadastrar mais uma pessoa\n2 - Listar cadastradas \n3 - Filtrar pessoas pelo nome\n4 - Encerrar o programa\n\n";
-    std::cin >> loopQuit;
+    cout << "\nVoce gostaria de cadastrar mais uma pessoa, listar as já cadastradas, ou encerrar o programa?\n\n1 - Cadastrar mais uma pessoa\n2 - Listar cadastradas \n3 - Filtrar pessoas pelo nome\n4 - Encerrar o programa\n\n";
+    cin >> loopQuit;
 
-    if (std::cin.fail())
+    if (cin.fail())
         throw(1);
 
     switch (loopQuit)
@@ -53,13 +55,13 @@ void showMenu()
     {
         for (const Pessoa &obj : pessoas)
         {
-            std::cout
+            cout
                 << "\n-------------------\n"
-                << "Nome: " << obj.nome << std::endl;
-            std::cout << "Idade: " << obj.idade << std::endl;
-            std::cout << "Peso: " << obj.peso << "kg" << std::endl;
-            std::cout << "Altura: " << obj.altura << "m" << std::endl;
-            std::cout << "IMC: " << obj.imc << std::endl;
+                << "Nome: " << obj.nome << endl;
+            cout << "Idade: " << obj.idade << endl;
+            cout << "Peso: " << obj.peso << "kg" << endl;
+            cout << "Altura: " << obj.altura << "m" << endl;
+            cout << "IMC: " << obj.imc << endl;
         }
         loopController++;
         loopSkip = 0;
@@ -67,14 +69,17 @@ void showMenu()
     }
     case 3: // Filtro pelo nome
     {
-        std::cout << "Insira o nome a ser filtrado:\n";
-        std::cin >> filter;
+        cout << "Insira o nome a ser filtrado:" << endl;
+        cin >> filter;
 
-        std::vector<Pessoa> pessoasFiltradas;
+        if (cin.fail())
+            throw(1);
+
+        vector<Pessoa> pessoasFiltradas;
 
         for (const Pessoa &obj : pessoas)
         {
-            if (obj.nome.find(filter) != std::string::npos)
+            if (obj.nome.find(filter) != string::npos)
             {
                 pessoasFiltradas.push_back(obj);
             }
@@ -82,13 +87,13 @@ void showMenu()
 
         for (const Pessoa &obj : pessoasFiltradas)
         {
-            std::cout
+            cout
                 << "\n-------------------\n"
-                << "Nome: " << obj.nome << std::endl;
-            std::cout << "Idade: " << obj.idade << std::endl;
-            std::cout << "Peso: " << obj.peso << "kg" << std::endl;
-            std::cout << "Altura: " << obj.altura << "m" << std::endl;
-            std::cout << "IMC: " << obj.imc << std::endl;
+                << "Nome: " << obj.nome << endl;
+            cout << "Idade: " << obj.idade << endl;
+            cout << "Peso: " << obj.peso << "kg" << endl;
+            cout << "Altura: " << obj.altura << "m" << endl;
+            cout << "IMC: " << obj.imc << endl;
         }
         loopController++;
         loopSkip = 0;
@@ -100,7 +105,7 @@ void showMenu()
         loopSkip = 0;
         break;
     default: // Se no menu eu receber um número diferente dos esperados essa mensagem é exibida. O cadastro de Pessoa é pulado também.
-        std::cout << "O numero digitado nao compreende aos esperados\n";
+        cout << "O número digitado nao compreende aos esperados\n";
         loopController++;
         loopSkip = 0;
         break;
@@ -109,6 +114,10 @@ void showMenu()
 
 int main()
 {
+    setlocale(LC_ALL, "pt_BR.UTF-8");
+    locale::global(locale());
+    cout.imbue(locale());
+
     try
     {
         while (i < loopController)
@@ -116,21 +125,21 @@ int main()
             if (loopSkip == 1)
             {
                 // Cadastro de Pessoa
-                std::cout << "\nInsira seu nome abaixo:\n";
-                std::cin >> privateNome;
-                std::cout << "Insira a sua idade:\n";
-                std::cin >> privateIdade;
-                std::cout << "Insira o seu peso:\n";
-                std::cin >> privatePeso;
-                std::cout << "Insira a sua altura:\n";
-                std::cin >> privateAltura;
+                cout << "Insira seu nome abaixo:" << endl;
+                getline(cin >> ws, privateNome);
+                cout << "Insira a sua idade:" << endl;
+                cin >> privateIdade;
+                cout << "Insira o seu peso:" << endl;
+                cin >> privatePeso;
+                cout << "Insira a sua altura:" << endl;
+                cin >> privateAltura;
 
-                if (std::cin.fail())
+                if (cin.fail())
                     throw(1);
 
                 // Calculo de IMC
                 privateImc = privatePeso / (privateAltura * privateAltura);
-                std::cout << "\nSeu imc e: " << privateImc << std::endl;
+                cout << "\nSeu imc é: " << privateImc << endl;
 
                 // População do vetor
                 Pessoa pessoa(privateNome, privateIdade, privatePeso, privateAltura, privateImc);
@@ -147,7 +156,7 @@ int main()
     catch (int meuErro)
     {
         if (meuErro == 1)
-            std::cout << "\n\nO que foi digitado nao e o esperado. Apenas numeros sao permitidos.\n\n";
+            cout << "\n\nO que foi digitado não era o esperado. Apenas números são permitidos.\n\n";
     }
 
     return 0;
