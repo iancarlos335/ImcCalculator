@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <locale>
+#include <clocale>
 using namespace std;
 
 string privateNome;
@@ -9,10 +10,9 @@ double privatePeso;
 double privateAltura;
 double privateImc;
 
-int i = 0;
-int loopController = 1;
-int loopQuit = 0;
-int loopSkip = 1;
+bool loopController = true;
+int menuController = 0;
+bool loopSkip = true;
 
 class Pessoa
 {
@@ -40,16 +40,15 @@ vector<Pessoa> pessoas;
 void showMenu()
 {
     cout << "\nVoce gostaria de cadastrar mais uma pessoa, listar as já cadastradas, ou encerrar o programa?\n\n1 - Cadastrar mais uma pessoa\n2 - Listar cadastradas \n3 - Filtrar pessoas pelo nome\n4 - Encerrar o programa\n\n";
-    cin >> loopQuit;
+    cin >> menuController;
 
     if (cin.fail())
         throw(1);
 
-    switch (loopQuit)
+    switch (menuController)
     {
     case 1: // Dou sequência no loop e forço a introdução ser reapresentada.
-        loopController++;
-        loopSkip = 1;
+        loopSkip = true;
         break;
     case 2: //  Pego todas as pessoas e exibo cada atributo. O cadastro de Pessoa é pulado também.
     {
@@ -63,8 +62,7 @@ void showMenu()
             cout << "Altura: " << obj.altura << "m" << endl;
             cout << "IMC: " << obj.imc << endl;
         }
-        loopController++;
-        loopSkip = 0;
+        loopSkip = false;
         break;
     }
     case 3: // Filtro pelo nome
@@ -95,19 +93,17 @@ void showMenu()
             cout << "Altura: " << obj.altura << "m" << endl;
             cout << "IMC: " << obj.imc << endl;
         }
-        loopController++;
-        loopSkip = 0;
+        loopSkip = false;
 
         break;
     }
     case 4: // Encerro o programa, matando o loop.
-        loopController = 0;
-        loopSkip = 0;
+        loopController = false;
+        loopSkip = false;
         break;
     default: // Se no menu eu receber um número diferente dos esperados essa mensagem é exibida. O cadastro de Pessoa é pulado também.
         cout << "O número digitado nao compreende aos esperados\n";
-        loopController++;
-        loopSkip = 0;
+        loopSkip = false;
         break;
     };
 }
@@ -120,11 +116,11 @@ int main()
 
     try
     {
-        while (i < loopController)
+        while (loopController)
         {
-            if (loopSkip == 1)
+            if (loopSkip)
             {
-                // Cadastro de Pessoa
+                // Inserção de dados
                 cout << "Insira seu nome abaixo:" << endl;
                 getline(cin >> ws, privateNome);
                 cout << "Insira a sua idade:" << endl;
@@ -141,7 +137,7 @@ int main()
                 privateImc = privatePeso / (privateAltura * privateAltura);
                 cout << "\nSeu imc é: " << privateImc << endl;
 
-                // População do vetor
+                // Cadastro da Pessoa
                 Pessoa pessoa(privateNome, privateIdade, privatePeso, privateAltura, privateImc);
                 pessoas.push_back(pessoa);
 
